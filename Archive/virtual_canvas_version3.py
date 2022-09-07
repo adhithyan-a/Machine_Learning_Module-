@@ -1,5 +1,6 @@
-# Version 4
-# adding extra header for pencil and brush tools
+# Version 3
+# adding rectangle,circle,line
+
 
 
 from cmath import sqrt
@@ -24,10 +25,7 @@ for impath in myList:
 print(len(overlayList))
 
 header_top = overlayList[0][0:110,0:1280] 
-header_side = overlayList[0][0:480,0:150]
-header_side_2 = overlayList[0][480:720,0:150]
-
-
+header_side = overlayList[0][0:720,0:150]
 
 
 drawColor = [255,255,255]
@@ -89,30 +87,30 @@ while True:
             if x< 160 :
                 if 115 < y < 230:
                     # header_top = overlayList[0][0:110,0:1280] 
-                    header_side = overlayList[1][0:480,0:150]
+                    header_side = overlayList[1][0:720,0:150]
                     tool = 0
 
                 elif 230 < y < 345:
                     # header_top = overlayList[0][0:110,0:1280] 
-                    header_side = overlayList[2][0:480,0:150]
+                    header_side = overlayList[2][0:720,0:150]
                     tool = 1
                     
 
                 elif 345 < y < 460:
                     # header_top = overlayList[0][0:110,0:1280] 
-                    header_side = overlayList[3][0:480,0:150]
+                    header_side = overlayList[3][0:720,0:150]
                     tool = 2
                    
 
                 elif 460 < y < 575:
                     # header_top = overlayList[0][0:110,0:1280] 
-                    header_side_2 = overlayList[4][480:720,0:150]
+                    header_side = overlayList[4][0:720,0:150]
                     pencilthickness = 30
                     tool = 3
 
                 elif 575 < y < 690:
                     # header_top = overlayList[0][0:110,0:1280] 
-                    header_side_2 = overlayList[5][480:720,0:150]
+                    header_side = overlayList[5][0:720,0:150]
                     pencilthickness  = 10
                     tool = 4
 
@@ -192,6 +190,13 @@ while True:
    
 
             elif tool == 2: #Line
+                # cv2.line(img,(x1,y1),(x4,y4),drawColor,(pencilthickness//4))
+
+                # if fingers[4] == True:
+                #     cv2.line(imgCanvas,(x1,y1),(x4,y4),drawColor,(pencilthickness//3))
+
+                
+
                 cv2.line(img,(xi,yi),(x1,y1),drawColor,(pencilthickness//4))
 
                 if fingers[4]== True:
@@ -228,10 +233,7 @@ while True:
 
 # setting the header image
     img[0:110,0:1280] = header_top
-    img[0:480,0:150] = header_side
-    img[480:720,0:150] = header_side_2
-
-
+    img[0:720,0:150] = header_side
 
     # img = cv2.addWeighted(img,0.5,imgCanvas,0.5,0)
 

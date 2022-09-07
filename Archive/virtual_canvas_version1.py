@@ -1,16 +1,13 @@
-# Version 4
-# adding extra header for pencil and brush tools
+# Version 1
+# Active pannel - only top pannel
 
 
-from cmath import sqrt
-from math import dist
+
 import cv2
 import numpy as np
 import hand_tracking_module_new as htm
 import time
 import os
-
-xi, yi =0,0
 
 
 folder_path = "Overlays"
@@ -24,20 +21,15 @@ for impath in myList:
 print(len(overlayList))
 
 header_top = overlayList[0][0:110,0:1280] 
-header_side = overlayList[0][0:480,0:150]
-header_side_2 = overlayList[0][480:720,0:150]
-
-
-
+header_side = overlayList[0][0:720,0:150]
 
 drawColor = [255,255,255]
 xp,yp = 0,0
-
 imgCanvas = np.zeros((720,1280,3),np.uint8)
 
-eraserthickness  = 20
+eraserthickness  = 70
 pencilthickness = 10
-tool = 4
+temp = 1
 
 cap = cv2.VideoCapture(0)
 cap.set(3,1280)
@@ -65,10 +57,6 @@ while True:
         # tip of index and middle fingers
         x1,y1 = lmList[8][1:]
         x2,y2 = lmList[12][1:]
-        # tip of pinky finger
-        x3,y3 = lmList[20][1:]
-        # tip of thumb
-        x4,y4 = lmList[4][1:]
 
 
 
@@ -77,9 +65,9 @@ while True:
         # print(fingers)
 
 
+
 # 4. selection mode - two fingers up
         if fingers[1] & fingers[2] == True:
-            xi, yi = x1,y1
             xp,yp = 0,0
 
             x= (x1+x2)//2
@@ -88,61 +76,58 @@ while True:
 
             if x< 160 :
                 if 115 < y < 230:
-                    # header_top = overlayList[0][0:110,0:1280] 
-                    header_side = overlayList[1][0:480,0:150]
-                    tool = 0
+                    header_top = overlayList[0][0:110,0:1280] 
+                    header_side = overlayList[1][0:720,0:150]
 
                 elif 230 < y < 345:
-                    # header_top = overlayList[0][0:110,0:1280] 
-                    header_side = overlayList[2][0:480,0:150]
-                    tool = 1
-                    
+                    header_top = overlayList[0][0:110,0:1280] 
+                    header_side = overlayList[2][0:720,0:150]
 
                 elif 345 < y < 460:
-                    # header_top = overlayList[0][0:110,0:1280] 
-                    header_side = overlayList[3][0:480,0:150]
-                    tool = 2
-                   
+                    header_top = overlayList[0][0:110,0:1280] 
+                    header_side = overlayList[3][0:720,0:150]
 
                 elif 460 < y < 575:
-                    # header_top = overlayList[0][0:110,0:1280] 
-                    header_side_2 = overlayList[4][480:720,0:150]
-                    pencilthickness = 30
-                    tool = 3
+                    header_top = overlayList[0][0:110,0:1280] 
+                    header_side = overlayList[4][0:720,0:150]
 
                 elif 575 < y < 690:
-                    # header_top = overlayList[0][0:110,0:1280] 
-                    header_side_2 = overlayList[5][480:720,0:150]
-                    pencilthickness  = 10
-                    tool = 4
+                    header_top = overlayList[0][0:110,0:1280] 
+                    header_side = overlayList[5][0:720,0:150]   
 
             if y < 110 :
                 if 200 < x < 380: #+180
+                    temp = 1
                     header_top = overlayList[6][0:110,0:1280] 
                     # header_side = overlayList[6][0:720,0:150]
                     drawColor = [0,0,255]
 
                 elif 380 < x < 560:
+                    temp = 1
                     header_top = overlayList[7][0:110,0:1280] 
                     # header_side = overlayList[7][0:720,0:150]
                     drawColor = [103, 232, 110]
 
                 elif 560 < x < 740:
+                    temp = 1
                     header_top = overlayList[8][0:110,0:1280] 
                     # header_side = overlayList[8][0:720,0:150]
                     drawColor = [227, 244, 109]
 
                 elif 740 < x < 920:
+                    temp = 1
                     header_top = overlayList[9][0:110,0:1280] 
                     # header_side = overlayList[9][0:720,0:150]
                     drawColor = [24, 253, 255]
 
                 elif 920 < x < 1100:
+                    temp = 1
                     header_top = overlayList[10][0:110,0:1280] 
                     # header_side = overlayList[10][0:720,0:150]
                     drawColor = [255,255,255]   
 
                 elif 1100 < x < 1280:
+                    temp = 0
                     header_top = overlayList[11][0:110,0:1280] 
                     # header_side = overlayList[11][0:720,0:150]
                     drawColor = [0, 0, 0]     
@@ -152,61 +137,27 @@ while True:
 
 # 5. drawing mode - one finger up
         if fingers[1] & fingers[2] == False:
+            cv2.circle(img,(x1,y1),15,drawColor,cv2.FILLED)
+            print("Drawing mode")
+
+            if xp == 0 and yp == 0:
+                xp, yp = x1, y1
 
 
-            if tool ==3 or tool ==4: # freestyle
-                cv2.circle(img,(x1,y1),15,drawColor,cv2.FILLED)
-                print("Drawing mode")
-
-                if xp == 0 and yp == 0:
-                    xp, yp = x1, y1
-
-                # freehand drawing mode
-                if drawColor==[0,0,0]:
-                    cv2.line(img,(xp,yp),(x1,y1),drawColor,eraserthickness)
-                    cv2.line(imgCanvas,(xp,yp),(x1,y1),drawColor,eraserthickness)
-                    print('hi')
-
-                if drawColor != (0,0,0):
-                    cv2.line(img,(xp,yp),(x1,y1),drawColor,pencilthickness)
-                    cv2.line(imgCanvas,(xp,yp),(x1,y1),drawColor,pencilthickness)
-        
+            if temp == 0:
+                cv2.line(img,(xp,yp),(x1,y1),drawColor,eraserthickness)
+                cv2.line(imgCanvas,(xp,yp),(x1,y1),drawColor,eraserthickness)
 
 
-            elif tool == 0: #rectangle
-                cv2.rectangle(img,(x4,y4),(x1,y1),drawColor,(pencilthickness//6))
-
-                if fingers[4] == True:
-                    cv2.rectangle(imgCanvas,(x4,y4),(x1,y1),drawColor,(pencilthickness//4))
-
-
-
-            elif tool == 1: #Circle
-                rad = int(dist((x1,y1),(x4,y4)))
-                # print(rad)
-                cv2.circle(img,(x1,y1),rad,drawColor,thickness=(pencilthickness//6))
-
-                if fingers[4] == True:
-                    cv2.circle(imgCanvas,(x1,y1),rad,drawColor,thickness=(pencilthickness//4))
- 
-   
-
-            elif tool == 2: #Line
-                cv2.line(img,(xi,yi),(x1,y1),drawColor,(pencilthickness//4))
-
-                if fingers[4]== True:
-                    cv2.line(imgCanvas,(xi,yi),(x1,y1),drawColor,(pencilthickness//4))
-                    xi,yi = x1,y1
-
-
-
+            elif temp == 1:
+                cv2.line(img,(xp,yp),(x1,y1),drawColor,pencilthickness)
+                cv2.line(imgCanvas,(xp,yp),(x1,y1),drawColor,pencilthickness)
 
             xp, yp = x1, y1  
 
-
   # Palm erase     
         if fingers == [1,1,1,1,1]:
-            rad = abs((x2-x1)*2)
+            rad = (x2-x1)
             cv2.circle(img,(x1,y1),rad,(0,0,0),cv2.FILLED)
             print("palm erase")
 
@@ -228,10 +179,7 @@ while True:
 
 # setting the header image
     img[0:110,0:1280] = header_top
-    img[0:480,0:150] = header_side
-    img[480:720,0:150] = header_side_2
-
-
+    img[0:720,0:150] = header_side
 
     # img = cv2.addWeighted(img,0.5,imgCanvas,0.5,0)
 
