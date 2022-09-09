@@ -26,6 +26,7 @@ print(len(overlayList))
 header_top = overlayList[0][0:110,0:1280] 
 header_side = overlayList[0][0:480,0:150]
 header_side_2 = overlayList[0][480:720,0:150]
+header_bottom = overlayList[0][685:720,150:1280]
 
 
 
@@ -85,8 +86,10 @@ while True:
             x= (x1+x2)//2
             y = (y1+y2)//2
             print("Selection mode")
+            
 
             if x< 160 :
+
                 if 115 < y < 230:
                     # header_top = overlayList[0][0:110,0:1280] 
                     header_side = overlayList[1][0:480,0:150]
@@ -177,7 +180,7 @@ while True:
                 cv2.rectangle(img,(x4,y4),(x1,y1),drawColor,(pencilthickness//6))
 
                 if fingers[4] == True:
-                    cv2.rectangle(imgCanvas,(x4,y4),(x1,y1),drawColor,(pencilthickness//4))
+                    cv2.rectangle(imgCanvas,(x4,y4),(x1,y1),drawColor,(pencilthickness//2))
 
 
 
@@ -187,7 +190,7 @@ while True:
                 cv2.circle(img,(x1,y1),rad,drawColor,thickness=(pencilthickness//6))
 
                 if fingers[4] == True:
-                    cv2.circle(imgCanvas,(x1,y1),rad,drawColor,thickness=(pencilthickness//4))
+                    cv2.circle(imgCanvas,(x1,y1),rad,drawColor,thickness=(pencilthickness//2))
  
    
 
@@ -199,9 +202,8 @@ while True:
                     xi,yi = x1,y1
 
 
-
-
             xp, yp = x1, y1  
+
 
 
   # Palm erase     
@@ -230,6 +232,8 @@ while True:
     img[0:110,0:1280] = header_top
     img[0:480,0:150] = header_side
     img[480:720,0:150] = header_side_2
+    img[685:720,150:1280] = header_bottom
+
 
 
 
