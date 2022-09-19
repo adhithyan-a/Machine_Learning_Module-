@@ -1,6 +1,7 @@
 # Version 4
 # adding extra header for pencil and brush tools
 
+# This is a sample comment
 
 from cmath import sqrt
 from math import dist
